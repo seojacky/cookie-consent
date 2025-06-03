@@ -1,0 +1,471 @@
+/* 
+ * Cookie Consent Banner Styles
+ * Улучшенная версия с accessibility, производительностью и темами
+ */
+
+/* Базовые стили для баннера */
+#cookie-consent-banner {
+    position: fixed;
+    left: 0;
+    width: 100%;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    padding: 15px;
+    z-index: 9999;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    will-change: transform, opacity;
+    box-sizing: border-box;
+}
+
+/* Позиционирование баннера */
+#cookie-consent-banner[data-position="bottom"] {
+    bottom: 0;
+    border-top: 1px solid #dee2e6;
+    border-bottom: none;
+    transform: translateY(100%);
+}
+
+#cookie-consent-banner[data-position="top"] {
+    top: 0;
+    border-bottom: 1px solid #dee2e6;
+    border-top: none;
+    transform: translateY(-100%);
+}
+
+#cookie-consent-banner[data-position="modal"] {
+    top: 50%;
+    left: 50%;
+    width: auto;
+    max-width: 90%;
+    min-width: 320px;
+    transform: translate(-50%, -50%) scale(0.9);
+    border-radius: 8px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* Показ баннера */
+#cookie-consent-banner.cookie-consent-show {
+    transform: translateY(0) !important;
+}
+
+#cookie-consent-banner[data-position="modal"].cookie-consent-show {
+    transform: translate(-50%, -50%) scale(1) !important;
+}
+
+/* Контент баннера */
+.cookie-consent-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.cookie-consent-content p {
+    flex: 1;
+    margin: 0;
+    color: #333;
+    min-width: 0; /* Предотвращаем overflow */
+}
+
+.cookie-consent-content p a {
+    color: #6f42c1;
+    text-decoration: underline;
+    transition: color 0.2s ease;
+}
+
+.cookie-consent-content p a:hover,
+.cookie-consent-content p a:focus {
+    color: #5a2d91;
+    outline: 2px solid #6f42c1;
+    outline-offset: 2px;
+}
+
+/* Контейнер кнопок */
+.cookie-consent-buttons {
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+/* Базовые стили кнопок */
+.cookie-consent-button,
+.accept-button,
+.deny-button,
+.settings-button {
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    min-width: 80px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Кнопка принятия */
+.accept-button {
+    background-color: #28a745;
+    color: white;
+}
+
+.accept-button:hover {
+    background-color: #218838;
+    transform: translateY(-1px);
+}
+
+.accept-button:focus {
+    outline: 2px solid #28a745;
+    outline-offset: 2px;
+    background-color: #218838;
+}
+
+.accept-button:active {
+    transform: translateY(0);
+    background-color: #1e7e34;
+}
+
+/* Кнопка отказа */
+.deny-button {
+    background-color: #dc3545;
+    color: white;
+}
+
+.deny-button:hover {
+    background-color: #c82333;
+    transform: translateY(-1px);
+}
+
+.deny-button:focus {
+    outline: 2px solid #dc3545;
+    outline-offset: 2px;
+    background-color: #c82333;
+}
+
+.deny-button:active {
+    transform: translateY(0);
+    background-color: #bd2130;
+}
+
+/* Кнопка настроек */
+.settings-button {
+    background-color: #6c757d;
+    color: white;
+}
+
+.settings-button:hover {
+    background-color: #5a6268;
+    transform: translateY(-1px);
+}
+
+.settings-button:focus {
+    outline: 2px solid #6c757d;
+    outline-offset: 2px;
+    background-color: #5a6268;
+}
+
+/* Темная тема */
+#cookie-consent-banner[data-theme="dark"] {
+    background-color: #2d3748;
+    border-color: #4a5568;
+    color: #e2e8f0;
+}
+
+#cookie-consent-banner[data-theme="dark"] .cookie-consent-content p {
+    color: #e2e8f0;
+}
+
+#cookie-consent-banner[data-theme="dark"] .cookie-consent-content p a {
+    color: #90cdf4;
+}
+
+#cookie-consent-banner[data-theme="dark"] .cookie-consent-content p a:hover,
+#cookie-consent-banner[data-theme="dark"] .cookie-consent-content p a:focus {
+    color: #63b3ed;
+}
+
+/* Адаптивные стили */
+@media (max-width: 768px) {
+    #cookie-consent-banner {
+        padding: 12px;
+    }
+
+    .cookie-consent-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+    }
+
+    .cookie-consent-content p {
+        margin: 0;
+        font-size: 13px;
+    }
+
+    .cookie-consent-buttons {
+        width: 100%;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .accept-button,
+    .deny-button,
+    .settings-button {
+        flex: 1;
+        min-width: 0;
+        padding: 12px 16px;
+        font-size: 13px;
+    }
+
+    /* Модальное окно на мобильных */
+    #cookie-consent-banner[data-position="modal"] {
+        max-width: 95%;
+        margin: 0 2.5%;
+    }
+}
+
+@media (max-width: 480px) {
+    .cookie-consent-buttons {
+        flex-direction: column;
+    }
+
+    .accept-button,
+    .deny-button,
+    .settings-button {
+        width: 100%;
+        margin: 0;
+    }
+}
+
+/* Высококонтрастный режим для accessibility */
+@media (prefers-contrast: high) {
+    #cookie-consent-banner {
+        border-width: 2px;
+        border-color: #000;
+    }
+
+    .accept-button {
+        background-color: #000;
+        border: 2px solid #000;
+    }
+
+    .deny-button {
+        background-color: #fff;
+        color: #000;
+        border: 2px solid #000;
+    }
+
+    .cookie-consent-content p a {
+        color: #0000ff;
+        text-decoration: underline;
+        text-decoration-thickness: 2px;
+    }
+}
+
+/* Режим пониженного движения */
+@media (prefers-reduced-motion: reduce) {
+    #cookie-consent-banner,
+    .accept-button,
+    .deny-button,
+    .settings-button,
+    .cookie-consent-content p a {
+        transition: none;
+    }
+
+    #cookie-consent-banner[data-animation="none"] {
+        transition: none;
+    }
+}
+
+/* Анимации */
+#cookie-consent-banner[data-animation="fade"] {
+    opacity: 0;
+    transform: none;
+    transition: opacity 0.3s ease-in-out;
+}
+
+#cookie-consent-banner[data-animation="fade"].cookie-consent-show {
+    opacity: 1;
+}
+
+#cookie-consent-banner[data-animation="none"] {
+    transition: none;
+    transform: none;
+}
+
+#cookie-consent-banner[data-animation="none"].cookie-consent-show {
+    transform: none;
+}
+
+/* Состояния загрузки */
+.cookie-consent-loading .accept-button,
+.cookie-consent-loading .deny-button,
+.cookie-consent-loading .settings-button {
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+.cookie-consent-loading .accept-button::after,
+.cookie-consent-loading .deny-button::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    margin: -8px 0 0 -8px;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: cookie-consent-spin 1s linear infinite;
+}
+
+@keyframes cookie-consent-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Фокус индикаторы для клавиатурной навигации */
+#cookie-consent-banner:focus-within {
+    outline: 2px solid #6f42c1;
+    outline-offset: 2px;
+}
+
+/* Скрытый заголовок для скрин-ридеров */
+.sr-only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+/* Индикатор для скрин-ридеров */
+.cookie-consent-status {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+/* Backdrop для модального окна */
+#cookie-consent-banner[data-position="modal"]::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+#cookie-consent-banner[data-position="modal"].cookie-consent-show::before {
+    opacity: 1;
+}
+
+/* Кастомные CSS переменные для легкой настройки */
+:root {
+    --cookie-consent-bg: #f8f9fa;
+    --cookie-consent-border: #dee2e6;
+    --cookie-consent-text: #333;
+    --cookie-consent-link: #6f42c1;
+    --cookie-consent-accept-bg: #28a745;
+    --cookie-consent-deny-bg: #dc3545;
+    --cookie-consent-settings-bg: #6c757d;
+    --cookie-consent-shadow: rgba(0, 0, 0, 0.1);
+    --cookie-consent-border-radius: 5px;
+    --cookie-consent-transition: 0.3s ease-in-out;
+}
+
+/* Применение CSS переменных */
+#cookie-consent-banner {
+    background-color: var(--cookie-consent-bg);
+    border-color: var(--cookie-consent-border);
+    color: var(--cookie-consent-text);
+    box-shadow: 0 2px 10px var(--cookie-consent-shadow);
+    transition: transform var(--cookie-consent-transition), opacity var(--cookie-consent-transition);
+}
+
+.cookie-consent-content p {
+    color: var(--cookie-consent-text);
+}
+
+.cookie-consent-content p a {
+    color: var(--cookie-consent-link);
+}
+
+.accept-button {
+    background-color: var(--cookie-consent-accept-bg);
+    border-radius: var(--cookie-consent-border-radius);
+}
+
+.deny-button {
+    background-color: var(--cookie-consent-deny-bg);
+    border-radius: var(--cookie-consent-border-radius);
+}
+
+.settings-button {
+    background-color: var(--cookie-consent-settings-bg);
+    border-radius: var(--cookie-consent-border-radius);
+}
+
+/* Print стили */
+@media print {
+    #cookie-consent-banner {
+        display: none !important;
+    }
+}
+
+/* Стили для RTL языков */
+[dir="rtl"] .cookie-consent-content {
+    direction: rtl;
+}
+
+[dir="rtl"] .cookie-consent-buttons {
+    flex-direction: row-reverse;
+}
+
+/* Hover эффекты только для устройств с курсором */
+@media (hover: hover) {
+    .accept-button:hover,
+    .deny-button:hover,
+    .settings-button:hover {
+        transform: translateY(-1px);
+    }
+}
+
+/* Стили для touch устройств */
+@media (hover: none) {
+    .accept-button:active,
+    .deny-button:active,
+    .settings-button:active {
+        transform: scale(0.98);
+    }
+}
+
+/* Улучшенная типографика */
+.cookie-consent-content p {
+    font-feature-settings: "kern" 1, "liga" 1;
+    text-rendering: optimizeLegibility;
+}
+
+/* Оптимизация производительности */
+#cookie-consent-banner {
+    contain: layout style paint;
+    transform: translateZ(0); /* Включаем аппаратное ускорение */
+}
