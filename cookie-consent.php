@@ -3,7 +3,11 @@
 Plugin Name: Cookie Consent Banner
 Description: Простой баннер для согласия на использование cookies с GDPR соответствием
 Version: 3.1
-Author: Grok
+Author: seo_jacky
+Author URI: https://t.me/big_jacky
+Plugin URI: https://github.com/seojacky/cookie-consent
+GitHub Plugin URI: https://github.com/seojacky/cookie-consent
+Domain Path: /languages
 */
 
 // Prohibition of direct access to the file
