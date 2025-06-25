@@ -24,13 +24,6 @@ Full compliance with EU privacy regulations includes automatic blocking of track
 - Zero render-blocking resources
 - PageSpeed scores typically increase to 90-100
 
-## Installation
-
-Download the plugin and upload to `/wp-content/plugins/` directory, then activate through WordPress admin panel. Alternatively, use the WordPress plugin uploader or clone from GitHub.
-
-```bash
-git clone https://github.com/seojacky/cookie-consent.git
-```
 
 ## Configuration
 
