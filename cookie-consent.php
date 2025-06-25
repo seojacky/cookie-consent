@@ -2,7 +2,7 @@
 /*
 Plugin Name: Cookie Consent Banner
 Description: Простой баннер для согласия на использование cookies с GDPR соответствием
-Version: 3.1
+Version: 3.2
 Author: seo_jacky
 Author URI: https://t.me/big_jacky
 Plugin URI: https://github.com/seojacky/cookie-consent
@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
 // Основной класс плагина
 class CookieConsentBanner {
     
-    private $version = '3.1';
+    private $version = '3.2';
     private $plugin_slug = 'cookie-consent-banner';
     private static $instance = null;
     
