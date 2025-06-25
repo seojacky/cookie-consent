@@ -4,7 +4,7 @@ Tags: cookie, consent, gdpr, privacy, banner
 Requires at least: 5.0
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 3.1
+Stable tag: 3.2
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,7 +12,7 @@ Simple and GDPR-compliant cookie consent banner for WordPress with tracking scri
 
 == Description ==
 
-Cookie Consent Banner is a lightweight WordPress plugin that displays a customizable cookie consent banner to help your website comply with GDPR and other privacy regulations.
+PageSpeed-optimized GDPR cookie consent banner with lazy loading, multilingual support, and automatic tracking script blocking. Zero render-blocking resources for maximum performance.
 
 **Key Features:**
 
@@ -67,6 +67,12 @@ Yes, the plugin includes multilingual support using the format {:en}English{:}{:
 
 
 == Changelog ==
+= 3.2 - 26.06.2025 =
+* Added lazy loading for PageSpeed optimization
+* Zero render-blocking resources
+* Enhanced multilingual support
+* Improved GDPR compliance
+* Mobile responsiveness fixes
 
 = 3.1 =
 * Complete rewrite with modern architecture
