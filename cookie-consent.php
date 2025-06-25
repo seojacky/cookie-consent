@@ -64,45 +64,83 @@ class CookieConsentBanner {
     }
     
     /**
-     * Правильная загрузка ресурсов
+     * Правильная загрузка ресурсов с отложенной загрузкой
      */
     public function enqueueAssets() {
+        // Отладочная информация
+        error_log('Cookie Consent: enqueueAssets called');
+        
         // Проверяем, нужно ли показывать баннер
         if ($this->hasValidConsent()) {
+            error_log('Cookie Consent: Valid consent exists, not loading');
             return;
         }
         
-        // Загружаем CSS
-        wp_enqueue_style(
-            $this->plugin_slug . '-style',
-            plugin_dir_url(__FILE__) . 'css/cookie-consent.css',
-            [],
-            $this->version,
-            'all'
-        );
+        error_log('Cookie Consent: No consent, preparing lazy loading');
         
-        // Добавляем критический CSS inline для лучшей производительности
-        $critical_css = $this->getCriticalCSS();
-        wp_add_inline_style($this->plugin_slug . '-style', $critical_css);
+        // НЕ загружаем CSS и JS сразу, только подготавливаем конфигурацию
         
-        // Загружаем JavaScript
-        wp_enqueue_script(
-            $this->plugin_slug . '-script',
-            plugin_dir_url(__FILE__) . 'js/cookie-consent.js',
-            [],
-            $this->version,
-            true // В футере
-        );
+        // ВАЖНО: используем wp_footer вместо wp_add_inline_script
+        add_action('wp_footer', [$this, 'outputLazyScript'], 5);
+    }
+    
+    /**
+     * Вывод скрипта отложенной загрузки в футер
+     */
+    public function outputLazyScript() {
+        error_log('Cookie Consent: outputLazyScript called');
         
-        // Добавляем defer атрибут
-        add_filter('script_loader_tag', [$this, 'addDeferAttribute'], 10, 3);
+        $options = $this->getCachedOptions();
         
-        // Передаем данные в JavaScript
-        wp_localize_script($this->plugin_slug . '-script', 'cookieConsent', [
+        $config = [
+            'cssUrl' => plugin_dir_url(__FILE__) . 'css/cookie-consent.css',
+            'jsUrl' => plugin_dir_url(__FILE__) . 'js/cookie-consent.js',
             'ajaxurl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce($this->plugin_slug . '_nonce'),
+            'respectDNT' => $options['respect_dnt'] ?? false,
             'settings' => $this->getJSSettings()
-        ]);
+        ];
+        
+        echo "\n<!-- Cookie Consent Lazy Loading Script -->\n";
+        echo '<script>';
+        echo 'console.log("Cookie Consent: Configuration loaded");';
+        echo 'window.cookieConsent = ' . wp_json_encode($config) . ';';
+        echo "\n" . $this->getLazyLoadScriptContent();
+        echo '</script>';
+        echo "\n<!-- End Cookie Consent Lazy Loading Script -->\n";
+    }
+    
+    /**
+     * Получение содержимого скрипта отложенной загрузки из файла
+     */
+    private function getLazyLoadScriptContent() {
+        // Кешируем содержимое файла
+        $cache_key = $this->plugin_slug . '_lazy_script_content_' . $this->version;
+        $script_content = wp_cache_get($cache_key, $this->plugin_slug);
+        
+        if ($script_content === false) {
+            $script_path = plugin_dir_path(__FILE__) . 'js/cookie-consent-lazy.js';
+            
+            if (file_exists($script_path)) {
+                $script_content = file_get_contents($script_path);
+                error_log('Cookie Consent: Loaded lazy script from file');
+            } else {
+                // Fallback если файл не найден
+                $script_content = $this->getFallbackLazyScript();
+                error_log('Cookie Consent: cookie-consent-lazy.js file not found, using fallback');
+            }
+            
+            wp_cache_set($cache_key, $script_content, $this->plugin_slug, DAY_IN_SECONDS);
+        }
+        
+        return $script_content;
+    }
+    
+    /**
+     * Fallback скрипт если основной файл не найден
+     */
+    private function getFallbackLazyScript() {
+        return '(function(){"use strict";function a(a){for(var b=a+"=",c=document.cookie.split(";"),d=0;d<c.length;d++){for(var e=c[d];" "===e.charAt(0);)e=e.substring(1,e.length);if(0===e.indexOf(b))return decodeURIComponent(e.substring(b.length,e.length))}return null}if(a("cookie_consent"))return;if(window.cookieConsent&&window.cookieConsent.respectDNT&&("1"===navigator.doNotTrack||"1"===window.doNotTrack))return;var b=!1,c;function d(a){a&&a.type&&console.log("Cookie Consent: Loading triggered by",a.type),b||(b=!0,clearTimeout(c),window.removeEventListener("scroll",d,{passive:!0}),window.removeEventListener("touchstart",d,{passive:!0}),document.removeEventListener("mouseenter",d),document.removeEventListener("click",d),document.removeEventListener("DOMContentLoaded",e),setTimeout(function(){if(!document.getElementById("cookie-consent-banner-style")){var a=document.createElement("link");a.id="cookie-consent-banner-style",a.rel="stylesheet",a.href=window.cookieConsent&&window.cookieConsent.cssUrl||"",a.media="all",document.head.appendChild(a)}var b=document.createElement("script");b.id="cookie-consent-main-script",b.src=window.cookieConsent&&window.cookieConsent.jsUrl||"",b.async=!0,b.onload=function(){console.log("Cookie Consent: Banner loaded")},document.head.appendChild(b)},100))}function e(){c=setTimeout(d,3e3)}navigator.userAgent.indexOf("bot")>-1||navigator.userAgent.indexOf("Bot")>-1?d():(window.addEventListener("scroll",d,{passive:!0}),window.addEventListener("touchstart",d,{passive:!0}),document.addEventListener("mouseenter",d,{passive:!0}),document.addEventListener("click",d,{passive:!0}),document.addEventListener("DOMContentLoaded",e,{passive:!0}))})();';
     }
     
     /**
@@ -308,7 +346,7 @@ class CookieConsentBanner {
     }
     
     /**
-     * Отображение баннера
+     * Отображение баннера - НЕ показываем HTML сразу
      */
     public function displayBanner() {
         // Не показываем в админке
@@ -326,10 +364,30 @@ class CookieConsentBanner {
             return;
         }
         
+        // ИЗМЕНЕНИЕ: НЕ выводим HTML баннера сразу
+        // Вместо этого добавляем данные для отложенной загрузки
         $options = $this->getCachedOptions();
-        $banner_html = $this->getBannerHTML($options);
+        $banner_config = [
+            'privacy_url' => $this->getPrivacyPolicyURL($options),
+            'consent_text' => $this->getLocalizedText($options['consent_text'] ?? '', $this->getPrivacyPolicyURL($options)),
+            'accept_text' => $this->getLocalizedText($options['button_text'] ?? 'Accept'),
+            'deny_text' => $this->getLocalizedText($options['deny_text'] ?? 'Deny'),
+            'show_deny_button' => $options['show_deny_button'] ?? true,
+            'position' => $options['position'] ?? 'bottom',
+            'theme' => $options['theme'] ?? 'light',
+            'animation' => $options['animation'] ?? 'slide'
+        ];
         
-        echo $banner_html;
+        // Добавляем конфигурацию баннера в window для использования JS
+        echo '<script>window.cookieConsentBannerConfig = ' . wp_json_encode($banner_config) . ';</script>';
+    }
+    
+    /**
+     * Получение HTML баннера для AJAX
+     */
+    public function getBannerHTMLForAjax() {
+        $options = $this->getCachedOptions();
+        return $this->getBannerHTML($options);
     }
     
     /**
@@ -469,6 +527,9 @@ class CookieConsentBanner {
         foreach ($locales as $locale) {
             wp_cache_delete($this->plugin_slug . '_options_' . $locale, $this->plugin_slug);
         }
+        
+        // Очищаем кеш скрипта lazy loading
+        wp_cache_delete($this->plugin_slug . '_lazy_script_content_' . $this->version, $this->plugin_slug);
     }
     
     /**
