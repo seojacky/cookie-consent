@@ -1,7 +1,7 @@
 <?php
 /*
-Plugin Name: Cookie Consent Banner
-Description: Простой баннер для согласия на использование cookies с GDPR соответствием
+Plugin Name: Cookie Consent by seojacky
+Description: PageSpeed-optimized GDPR cookie consent banner with lazy loading, multilingual support, and automatic tracking script blocking. Zero render-blocking resources for maximum performance.
 Version: 3.2
 Author: seo_jacky
 Author URI: https://t.me/big_jacky
